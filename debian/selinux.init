@@ -1,0 +1,176 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:        selinux
+# Required-Start:
+# Required-Stop:
+# Default-Start:   2 3 4 5
+# Default-Stop:    0 6
+# Short-Description: Relabel the filesystem before reboot
+### END INIT INFO
+
+# Name of the file to create if requesting relabeling
+statusfile=/.autorelabel
+switchfile=/.switchpolicy
+
+# Source function library
+. /lib/lsb/init-functions
+
+# Get the selinux configuration variables
+SELINUXTYPE=""
+if [ -e $switchfile ]; then
+	. $switchfile
+elif [ -e /etc/selinux/config ]; then
+	. /etc/selinux/config 
+fi
+
+SETFILES=/sbin/setfiles
+LOAD_POLICY=/usr/sbin/load_policy
+
+# From fixfiles - determine what filesystems can be relabeled
+FILESYSTEMSRW=`/bin/mount | /bin/grep -v "context=" | /bin/egrep -v '\((|.*,)bind(,.*|)\)' | /usr/bin/awk '/(ext[234]| xfs | jfs ).*\(rw/{print $3}';`
+FILESYSTEMSRO=`/bin/mount | /bin/grep -v "context=" | /bin/egrep -v '\((|.*,)bind(,.*|)\)' | /usr/bin/awk '/(ext[234]| xfs | jfs ).*\(ro/{print $3}';`
+FILESYSTEMS="$FILESYSTEMSRW $FILESYSTEMSRO"
+
+lockdir=/var/lock/selinux-relabel
+
+# Start only creates the lock
+start() {
+	log_daemon_msg "Starting SELinux autorelabel"
+	if [ -e $statusfile ]; then
+		log_warning_msg "A relabel has already been requested. Please reboot to finish relabeling your system."
+		log_end_msg 0
+	else
+		mkdir $lockdir 2>/dev/null || true
+		log_end_msg 0
+	fi
+}
+
+# Stop performs the relabeling and removes the request to relabel
+stop() {
+	if [ -e $statusfile ]; then
+		if [ "x${SELINUXTYPE}" = "x" ]; then
+			log_failure_msg "No SELinux policy found"
+			/bin/rmdir $lockdir
+			exit 5  # LSB defines this as 'program is not installed'
+		fi
+		if [ `/usr/sbin/getenforce` != "Disabled" ]; then
+			echo "0" > /selinux/enforce
+		fi
+		log_warning_msg "If you are not already running SELinux, then you can"
+		log_warning_msg "safely ignore the following error message."
+ 		${LOAD_POLICY} && log_action_msg "Policy loaded successfully"
+ 		log_warning_msg "SELinux ${SELINUXTYPE} policy relabel is required."
+	 	log_warning_msg "Relabeling could take a very long time, depending"
+		log_warning_msg "on file system size and speed of hard drives."
+		/bin/sed -i -f $statusfile /etc/selinux/config
+		log_action_begin_msg "Relabeling files"
+		${SETFILES} /etc/selinux/${SELINUXTYPE}/contexts/files/file_contexts ${FILESYSTEMS}
+		log_action_end_msg $?
+		/bin/rm -f $statusfile $switchfile
+	fi
+	/bin/rmdir $lockdir
+}
+
+# Restart does nothing
+restart() {
+	start
+}
+
+# Determine if relabel has been requested
+status() {
+	if [ -d $lockdir ] ; then
+		if [ -e $statusfile ]; then
+			echo "Filesystem will be relabeled using policy ${SELINUXTYPE}."
+		else
+			echo "No relabeling requested."
+		fi
+		exit 0
+	else
+		echo "Not started"
+		exit 3   # LSB defines this as 'program is not running'
+	fi
+}
+
+# This creates the file 
+relabel() {
+	log_success_msg "File relabel will occur upon next shutdown/reboot."
+	/usr/bin/touch $statusfile
+}
+
+# This causes the policy to change before relabeling
+switch() {
+	if [ ! -z $1 ]; then 
+		relabel
+		echo "s/^SELINUXTYPE=.*/SELINUXTYPE=$1/" > $statusfile
+		echo "SELINUXTYPE=$1" > $switchfile
+		if [ ! -z $2 ]; then
+			echo "s/^SELINUX=.*/SELINUX=$2/" >> $statusfile
+			echo "SELINUX=$2" >> $switchfile
+		fi
+	else
+		echo "No policy specified"
+		exit 1
+	fi
+}
+
+cancel() {
+	/bin/rm -f $statusfile $switchfile
+}
+
+help() {
+	echo
+	echo "$0: Automatic relabel on reboot."
+	echo
+	echo "This script will cause automatic relabeling of the filesystem before"
+	echo "a reboot upon request." 
+	echo
+	echo "Options:"
+	echo
+	echo "   status   Check if relabeling has been requested"
+	echo
+	echo "   relabel  Request that the filesystem be relabeled"
+	echo
+	echo "   switch POLICY [ENFORCING]"
+	echo "            Request to switch to POLICY and set to ENFORCING (implies relabel)"
+	echo
+	echo "   cancel   Cancel a previous request to relabel"
+	echo "            If no request exists, this option does nothing"
+	echo
+	echo "   help     Display this help message"
+	echo
+}
+
+case "$1" in 
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	status)
+		status
+		;;
+	restart|try-restart|reload|force-reload)
+		restart
+		;;
+	relabel)
+		relabel
+		;;
+	switch)
+		# syntax: selinux switch <new_policy_name> <"enforcing"|"permissive">
+		switch $2 $3
+		;;
+	cancel)
+		cancel
+		;;
+	help)
+		help
+		;;
+	*)
+		log_failure_msg "Usage: $0 (status|relabel|switch|cancel|help)"
+		exit 2  # LSB defines this as 'invalid argument'
+esac
+
+exit 0
+

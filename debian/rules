@@ -1,0 +1,10 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/makefile.mk
+
+DEB_DH_INSTALL_ARGS = --sourcedir=debian/tmp
+DEB_BUILD_OPTIONS="nocheck"
+DEB_MAKE_INSTALL_TARGET=install DESTDIR=$(CURDIR)/debian/tmp
+DEB_UPDATE_RCD_PARAMS="start 05 2 3 4 5 . stop 95 0 6 . "

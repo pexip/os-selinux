@@ -1,0 +1,16 @@
+The 'selinux' package provides the basic infrastructure necessary for
+running SELinux.  It provides a script that loads the policy at
+startup, and a script to relabel the system on shutdown.  The system
+administrator is responsible for actually enabling SELinux in the
+kernel.  Typically this involves:
+
+1. Open the file /boot/grub/menu.lst.
+
+2. Find the line that begins with "# defoptions".
+
+3. Append to that line "selinux=1 enforcing=1"; this will enable
+   SELinux in enforcing mode.
+
+4. Run update-grub to rebuild menu.lst.
+
+5. Reboot to make changes go into effect.

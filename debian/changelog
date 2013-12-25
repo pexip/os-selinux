@@ -1,0 +1,82 @@
+selinux (1:0.11) precise; urgency=low
+
+  * Make update-selinux-policy work when only a base policy module is used.
+    (LP: #955426)
+
+ -- Tim Tickel <twt@google.com>  Wed, 14 Mar 2012 13:06:49 -0700
+
+selinux (1:0.10) precise; urgency=low
+
+  * Fix unsafe lockfile creation. The scope of this is limited by when this
+    script is run. On Ubuntu 10.10 and higher, Yama blocks exploitation of
+    this issue, but we want to fix this on Ubuntu 10.04 LTS (which doesn't
+    have Yama) and so this package is provided for upgrades. (LP: #876994)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 21 Dec 2011 12:20:37 -0600
+
+selinux (1:0.9) lucid; urgency=low
+
+  * mounted-var{run,lock}.upstart, Makefile: add more restorecon
+    calls for tmpfs filesystems, thanks to Stephen Lawrence (LP: #568744).
+
+ -- Kees Cook <kees@ubuntu.com>  Thu, 22 Apr 2010 16:58:14 -0700
+
+selinux (1:0.8) lucid; urgency=low
+
+  * debian/selinux.{preinst,postinst}, Makefile: move /etc/initramfs-tools
+    scripts to /usr/share/initramfs-tools.
+  * load_policy: source functions only in initramfs.
+  * mounted-dev.upstart, Makefile: move restorecon for /dev to upstart
+    job (LP: #556823).
+
+ -- Kees Cook <kees@ubuntu.com>  Tue, 06 Apr 2010 13:57:28 -0700
+
+selinux (1:0.7) lucid; urgency=low
+
+  * Move restorecon for /tmp to an upstart job.
+
+ -- Kees Cook <kees@ubuntu.com>  Fri, 22 Jan 2010 12:33:04 -0800
+
+selinux (1:0.6) karmic; urgency=low
+
+  * Recommend policy packages instead of depends to prevent circular
+    dependencies. 
+
+ -- Caleb Case <ccase@tresys.com>  Mon, 19 Oct 2009 17:25:39 -0400
+
+selinux (1:0.5) karmic; urgency=low
+
+  * GRUB 2 support, new LSM switching via 'security=' (LP: #428007).
+  * Added ext4 as a valid fs to relabeling script (LP: #371075).
+
+ -- Caleb Case <ccase@tresys.com>  Wed, 09 Sep 2009 14:58:21 -0400
+
+selinux (1:0.4) jaunty; urgency=low
+
+  * Adjusted depends to reflect package rename of selinux-policy-refpolicy
+    to selinux-policy-ubuntu (LP: #352771).
+
+ -- Caleb Case <ccase@tresys.com>  Mon, 23 Mar 2009 04:55:47 -0400
+
+selinux (1:0.3) intrepid; urgency=low
+
+  * Bump epoch to avoid old Debian "selinux" Conflict in policycoreutils
+    to make selinux installable in Intrepid again.
+
+ -- Kees Cook <kees@ubuntu.com>  Thu, 17 Jul 2008 12:18:37 -0700
+
+selinux (0.2) hardy; urgency=low
+
+  * load_policy:
+    - Use load_policy in /sbin instead of /usr/sbin (which may not be mounted
+      yet) (LP: #126415).
+  * update-selinux-policy:
+    - If selinux isn't enabled then do not reload the policy.
+
+ -- Caleb Case <ccase@tresys.com>  Fri, 29 Feb 2008 12:33:43 -0500
+
+selinux (0.1) hardy; urgency=low
+
+  * Initial Release.  The package supersedes selinux-basics.
+
+ -- J. Tang <jtang@tresys.com>  Tue, 29 Jan 2008 12:00:00 +0000

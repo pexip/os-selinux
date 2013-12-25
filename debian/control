@@ -1,0 +1,18 @@
+Source: selinux
+Section: admin
+Priority: optional
+Maintainer: Ubuntu Hardened Developers <ubuntu-hardened@lists.ubuntu.com>
+XSBC-Original-Maintainer: J. Tang <jtang@tresys.com>
+Build-Depends: debhelper (>= 5), cdbs
+Standards-Version: 3.7.2
+
+Package: selinux
+Architecture: all
+Pre-Depends: grub-pc
+Depends: policycoreutils, ${misc:Depends}, initramfs-tools, grub-pc, selinux-utils, login (>= 4.0.18.2-1ubuntu1)
+Recommends: selinux-policy-ubuntu | selinux-policy
+Conflicts: apparmor, linux-security
+Provides: linux-security
+Description: Security-Enhanced Linux runtime support
+ This package provides the minimal scripts necessary to run a
+ Security-Enhanced Linux (SELinux) system.
