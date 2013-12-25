@@ -1,10 +1,12 @@
 Source: selinux
 Section: admin
 Priority: optional
-Maintainer: Ubuntu Hardened Developers <ubuntu-hardened@lists.ubuntu.com>
+Maintainer: Pexip AS <packaging@pexip.com>
+XSBC-Pexip-Original-Maintainer: Ubuntu Hardened Developers <ubuntu-hardened@lists.ubuntu.com>
 XSBC-Original-Maintainer: J. Tang <jtang@tresys.com>
 Build-Depends: debhelper (>= 5), cdbs
 Standards-Version: 3.7.2
+XS-Pexip-Upstream: http://archive.ubuntu.com/ubuntu/ precise
 
 Package: selinux
 Architecture: all

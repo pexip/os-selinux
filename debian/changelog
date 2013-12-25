@@ -1,3 +1,9 @@
+selinux (1:0.11pexip1) pexip; urgency=low
+
+  * Prepare Pexip packaging
+
+ -- John-Mark Bell <jmb@pexip.com>  Wed, 25 Dec 2013 04:40:56 +0000
+
 selinux (1:0.11) precise; urgency=low
 
   * Make update-selinux-policy work when only a base policy module is used.
