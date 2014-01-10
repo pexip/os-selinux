@@ -51,6 +51,12 @@ MODS_D=/etc/selinux.d
 # get list of module paths that should be loaded
 ON_P=`/usr/bin/find $MODS_D -iregex '^.*\.pp$'`
 
+# Bail out if there are no modules at all
+if [ -z "$ON_P" ]; then
+	echo >&2 "Warning: no SELinux policy modules found."
+	exit 0
+fi
+
 # trim to just base module
 BASE_P=`/bin/echo "$ON_P" | /bin/grep -ie '^.*base\.pp$'`
 
