@@ -6,7 +6,7 @@ XSBC-Pexip-Original-Maintainer: Ubuntu Hardened Developers <ubuntu-hardened@list
 XSBC-Original-Maintainer: J. Tang <jtang@tresys.com>
 Build-Depends: debhelper (>= 5), cdbs
 Standards-Version: 3.7.2
-XS-Pexip-Upstream: http://archive.ubuntu.com/ubuntu/ precise
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ jessie
 
 Package: selinux
 Architecture: all
