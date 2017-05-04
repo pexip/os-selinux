@@ -22,7 +22,6 @@ set -e
 
 case "$1" in
     remove)
-        /usr/sbin/update-initramfs -u
     ;;
 
     purge|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)

@@ -1,3 +1,9 @@
+selinux (1:0.11pexip3) pexip; urgency=low
+
+  * Many changes for Jessie
+
+ -- John-Mark Bell <jmb@pexip.com>  Thu, 04 May 2017 12:55:18 +0100
+
 selinux (1:0.11pexip2) pexip; urgency=low
 
   * Make update-selinux-policy tolerate the lack of installed policy.

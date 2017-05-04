@@ -41,6 +41,9 @@ case "$1" in
             prep_rm_conffile selinux /etc/initramfs-tools/scripts/init-bottom/_load_policy
             prep_rm_conffile selinux /etc/initramfs-tools/scripts/init-bottom/_restorecon
         fi
+        if dpkg --compare-versions "$2" lt 1:0.11pexip3; then
+            prep_rm_conffile selinux /etc/initramfs-tools/scripts/init-bottom/_load_selinux_policy
+        fi
         ;;
 
     abort-upgrade)

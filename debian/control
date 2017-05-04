@@ -11,9 +11,8 @@ XS-Pexip-Upstream: http://ftp.debian.org/debian/ jessie
 Package: selinux
 Architecture: all
 Pre-Depends: grub-pc
-Depends: policycoreutils, ${misc:Depends}, initramfs-tools, grub-pc, selinux-utils, login (>= 4.0.18.2-1ubuntu1)
-Recommends: selinux-policy-ubuntu | selinux-policy
-Conflicts: apparmor, linux-security
+Depends: policycoreutils, ${misc:Depends}, initramfs-tools, grub-pc, selinux-utils, login, selinux-policy-default (>= 2:2.20140421-16pexip1)
+Conflicts: apparmor, linux-security, selinux-policy-ubuntu
 Provides: linux-security
 Description: Security-Enhanced Linux runtime support
  This package provides the minimal scripts necessary to run a

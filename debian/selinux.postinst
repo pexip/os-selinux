@@ -37,6 +37,9 @@ case "$1" in
             rm_conffile /etc/initramfs-tools/scripts/init-bottom/_load_policy
             rm_conffile /etc/initramfs-tools/scripts/init-bottom/_restorecon
 	fi
+        if dpkg --compare-versions "$2" lt 1:0.11pexip3; then
+            rm_conffile selinux /etc/initramfs-tools/scripts/init-bottom/_load_selinux_policy
+        fi
 
 	db_get selinux/updategrub || true
 	if [ "x$RET" = xtrue ]; then
@@ -58,14 +61,16 @@ case "$1" in
 		/usr/sbin/update-grub
 	fi
 	/usr/bin/dpkg-trigger update-initramfs
+
+	/usr/sbin/update-selinux-config default
+	/etc/init.d/selinux relabel
+
+        # Clean up old stuff
+	rm -rf /etc/selinux.d
+	rm -rf /etc/selinux/ubuntu
 	;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)
-	;;
-
-	triggered)
-	echo "semodule deferred processing now taking place"
-	/usr/sbin/update-selinux-policy
 	;;
 
 	*)

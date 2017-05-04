@@ -55,7 +55,11 @@ stop() {
 			exit 5  # LSB defines this as 'program is not installed'
 		fi
 		if [ `/usr/sbin/getenforce` != "Disabled" ]; then
-			echo "0" > /selinux/enforce
+			if [ -e /sys/fs/selinux/enforce ]; then
+				echo "0" > /sys/fs/selinux/enforce
+			else
+				echo "0" > /selinux/enforce
+			fi
 		fi
 		log_warning_msg "If you are not already running SELinux, then you can"
 		log_warning_msg "safely ignore the following error message."
